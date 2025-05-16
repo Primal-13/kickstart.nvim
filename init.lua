@@ -22,7 +22,19 @@
 
 What is Kickstart?
 
-  Kickstart.nvim is *not* a distribution.
+  Kickstart.nvim is *not* a distribution.i
+  'projekt0n/github-nvim-theme',
+  name = 'github-theme',
+  lazy = false, -- make sure we load this during startup if it is your main colorscheme
+  priority = 1000, -- make sure to load this before all the other start plugins
+  config = function()
+    require('github-theme').setup({
+      -- ...
+    })
+
+    vim.cmd('colorscheme github_dark')
+  end,
+}
 
   Kickstart.nvim is a starting point for your own configuration.
     The goal is that you can read every line of code, top-to-bottom, understand
@@ -357,7 +369,56 @@ require('lazy').setup({
   -- you do for a plugin at the top level, you can do for a dependency.
   --
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
-
+  {
+    'f-person/git-blame.nvim',
+    -- load the plugin at startup
+    event = 'VeryLazy',
+    -- Because of the keys part, you will be lazy loading this plugin.
+    -- The plugin will only load once one of the keys is used.
+    -- If you want to load the plugin at startup, add something like event = "VeryLazy",
+    -- or lazy = false. One of both options will work.
+    opts = {
+      -- your configuration comes here
+      -- for example
+      enabled = true, -- if you want to enable the plugin
+      message_template = ' <author> • <date> • <summary>', -- template for the blame message, check the Message template section for more options
+      date_format = '%x %I:%M %p', -- template for the date, check Date format section for more options
+      virtual_text_column = 1, -- virtual text start column, check Start virtual text at column section for more options
+    },
+  },
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
+      -- {"3rd/image.nvim", opts = {}}, -- Optional image support in preview window: See `# Preview Mode` for more information
+    },
+    lazy = false, -- neo-tree will lazily load itself
+    ---@module "neo-tree"
+    ---@type neotree.Config?
+    opts = {
+      -- fill any relevant options here
+      auto_close = true,
+      close_if_last_window = true,
+      enable_cursor_hijack = true,
+    },
+    init = function()
+      vim.g.neotree = {
+        auto_show = false,
+        auto_close = true,
+        auto_update = true,
+        update_to_buf_dir = true,
+      }
+    end,
+    config = function()
+      vim.keymap.set('n', '<leader>et', '<Cmd>Neotree toggle<CR>')
+      vim.keymap.set('n', '<leader>es', '<Cmd>Neotree show<CR>')
+      vim.keymap.set('n', '<leader>ec', '<Cmd>Neotree close<CR>')
+      vim.keymap.set('n', '<leader>ef', '<Cmd>Neotree float git_status<CR>')
+    end,
+  },
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     event = 'VimEnter',
@@ -684,6 +745,18 @@ require('lazy').setup({
         -- ts_ls = {},
         --
 
+        intelephense = {
+          init_options = {
+            licenseKey = '~/licenses/intelephense.txt',
+          },
+          settings = {
+            intelephense = {
+              files = {
+                maxSize = 1000000,
+              },
+            },
+          },
+        },
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -876,7 +949,7 @@ require('lazy').setup({
     },
   },
 
-  { -- You can easily change to a different colorscheme.
+  --[[ { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
     --
@@ -895,6 +968,19 @@ require('lazy').setup({
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme 'tokyonight-night'
+    end,
+  },]]
+  {
+    'projekt0n/github-nvim-theme',
+    name = 'github-theme',
+    lazy = false, -- make sure we load this during startup if it is your main colorscheme
+    priority = 1000, -- make sure to load this before all the other start plugins
+    config = function()
+      require('github-theme').setup {
+        -- ...
+      }
+
+      vim.cmd 'colorscheme github_dark_high_contrast'
     end,
   },
 
